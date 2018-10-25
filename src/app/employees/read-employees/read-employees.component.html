@@ -1,0 +1,59 @@
+<div class="row m-b-18px">
+    <div class="col-md-6">
+        <div><div class="col-md-6 ">
+            <input type="text" name="search" class="form-control pull-right" #search/></div> <div class="col-md-6">
+            <input type="submit" class='btn btn-primary pull-left mt-10 ' value='Search' (click)="searchEmployee(search)"/></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <a (click)="createEmployee()" class='btn btn-primary pull-right'>
+            <span class='glyphicon glyphicon-plus'></span> Create Employee
+        </a>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="col-md-12">
+        <table class='table table-hover table-responsive table-bordered'>
+ 
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Active</th>
+                <th>Department</th>
+                <th>Actions</th>
+            </tr>
+ 
+            <tr *ngFor="let employee of employees | paginate: { id: 'listing_pagination',
+                                                      itemsPerPage: perPage,
+                                                      currentPage: page,
+                                                      totalItems: totalCount }">
+                <td>{{employee.id}}</td>
+                <td>{{employee.name}}</td>
+                <td>{{employee.active ? 'Yes' : 'No'}}</td>
+                <td>{{employee.department.name}}</td>
+                <td>
+                    <a (click)="getEmployee(employee.id)" class='btn btn-primary m-r-5px'>
+                        <span class='glyphicon glyphicon-eye-open'></span> Read
+                    </a>
+ 
+                    <a (click)="updateEmployee(employee.id)" class='btn btn-info m-r-5px'>
+                        <span class='glyphicon glyphicon-edit'></span> Edit
+                    </a>
+ 
+                    <a (click)="deleteEmployee(employee.id)" class='btn btn-danger m-r-5px'>
+                        <span class='glyphicon glyphicon-remove'></span> Delete
+                    </a>
+                </td>
+            </tr>
+        </table>
+    <div>
+        <pagination-controls  
+            id="listing_pagination" 
+            directionLinks="true" 
+            autoHide="true" 
+            (pageChange)="getPage($event)" 
+        ></pagination-controls>
+    </div>
+    </div>
+</div>

@@ -1,0 +1,81 @@
+<div class="row m-b-18px">
+    <div class="col-md-12">
+        <a (click)="readEmployees()" class='btn btn-primary pull-right'>
+            <span class='glyphicon glyphicon-list'></span> Read Employees
+        </a>
+    </div>
+</div>
+ 
+<div class="row">
+<div class="col-md-12">
+ 
+<form [formGroup]="update_employee_form" (ngSubmit)="updateEmployee()">
+<table class='table table-hover table-responsive table-bordered'>
+ 
+    <tr>
+        <td>Name{{name}} </td>
+        <td>
+            <input formControlName="name"
+                type='text' name='name'
+                class='form-control' required />
+ 
+            <div
+                *ngIf="update_employee_form.get('name').touched && update_employee_form.get('name').hasError('required')"
+                class="alert alert-danger">
+                Name is required.
+            </div>
+        </td>
+    </tr>
+ 
+    <tr>
+        <td>Active</td>
+        <td>
+            <input
+                formControlName="active"
+                type="checkbox" name="active" />
+        </td>
+    </tr>
+ 
+    <tr>
+        <td>Department</td>
+        <td>
+            <select formControlName="department_id" name='department_id' class='form-control'>
+                <option
+                    *ngFor="let department of departments"
+                    [selected]="department_id==department.id"
+                    value='{{department.id}}'>
+                    {{department_id}} -- {{department.name}}
+                </option>
+            </select>
+ 
+            <div
+                *ngIf="update_employee_form.get('department_id').touched && update_employee_form.get('department_id').hasError('required')"
+                class="alert alert-danger">
+                Department is required.
+            </div>
+        </td>
+    </tr>
+ 
+    <tr>
+        <td></td>
+        <td>
+            <div class="row m-b-18px">
+                <div class="col-md-2">
+                    <button class="btn btn-primary" type="submit" [disabled]="update_employee_form.invalid">
+                        <span class="glyphicon glyphicon-edit"></span> Update
+                    </button>
+                </div>
+                <div class="col-md-10">
+                    <button (click)="cancel($event)" class="btn btn-danger">
+                        <span class="glyphicon glyphicon-remove-sign"></span> Cancel
+                    </button>
+                </div>
+            </div>
+        </td>
+    </tr>
+ 
+</table>
+</form>
+ 
+</div>
+</div>

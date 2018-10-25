@@ -1,0 +1,66 @@
+<div class="row">
+    <div class="col-md-12">
+    <form [formGroup]="create_employee_form" (ngSubmit)="createEmployee()">
+    <table class="table table-hover table-responsive table-bordered">
+        <tr>
+            <td>Name</td>
+            <td>
+                <input
+                    formControlName="name"
+                    name="name" type="text"
+                    class="form-control" required />
+                <div
+                    *ngIf="create_employee_form.get('name').touched && create_employee_form.get('name').hasError('required')"
+                    class="alert alert-danger">
+                    Name is required.
+                </div>
+            </td>
+        </tr>
+     
+        <tr>
+            <td>Active</td>
+            <td>
+                <input
+                    formControlName="active"
+                    type="checkbox" name="active" />
+            </td>
+        </tr>
+     
+        <tr>
+            <td>Department</td>
+            <td>
+                <select formControlName="department_id" name="department_id" class="form-control">
+                    <option *ngFor="let department of departments" value="{{department.id}}">
+                        {{department.name}}
+                    </option>
+                </select>
+                <div
+                    *ngIf="create_employee_form.get('department_id').touched && create_employee_form.get('department_id').hasError('required')"
+                    class="alert alert-danger">
+                    Department is required.
+                </div>
+            </td>
+        </tr>
+     
+        <tr>
+            <td></td>
+            <td>
+                <div class="row m-b-18px">
+                    <div class="col-md-2">
+                        <button class="btn btn-primary" type="submit" [disabled]="create_employee_form.invalid">
+                            <span class="glyphicon glyphicon-plus"></span> Create
+                        </button>
+                    </div>
+                    <div class="col-md-10">
+                        <button (click)="cancel($event)" class="btn btn-danger">
+                            <span class="glyphicon glyphicon-remove-sign"></span> Cancel
+                        </button>
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
+    </form>
+     
+    </div>
+</div>

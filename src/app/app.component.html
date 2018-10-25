@@ -1,21 +1,40 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://github.com/angular/angular-cli/wiki">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div class="container">
+ 
+    <div class="row">
+        <div class="col-md-12">
+            <div class='page-header'><h1>{{title}}</h1></div>
+        </div>
+    </div>
+ 
+    <app-read-employees
+        *ngIf="show_read_employees_html"
+        (show_create_employee_event)="showCreateEmployee($event)"
+        (show_get_employee_event)="showGetEmployee($event)"
+        (show_update_employee_event)="showUpdateEmployee($event)"
+        (show_delete_employee_event)="showDeleteEmployee($event)">
+    </app-read-employees>
 
-<router-outlet></router-outlet>
+    <app-create-employee
+        *ngIf="show_create_employee_html"
+        (show_read_employees_event)="showReadEmployees($event)">
+    </app-create-employee>
+
+    <app-get-employee
+        *ngIf="show_get_employee_html"
+        (show_read_employees_event)="showReadEmployees($event)"
+        [employee_id]="employee_id">
+    </app-get-employee>
+
+    <app-update-employee
+        *ngIf="show_update_employee_html"
+        [employee_id]="employee_id"
+        (show_read_employees_event)="showReadEmployees($event)">
+    </app-update-employee>
+
+    <app-delete-employee
+        *ngIf="show_delete_employee_html"
+        [employee_id]="employee_id"
+        (show_read_employees_event)="showReadEmployees($event)">
+    </app-delete-employee>
+ 
+</div>
