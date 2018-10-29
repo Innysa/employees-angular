@@ -5,11 +5,12 @@ import { Department } from '../models/department.model';
 import { HttpClient } from '@angular/common/http';
 
 const config: DatastoreConfig = {
-  baseUrl: 'http://localhost:3000/api',
-  models: {
-    employees: Employee,
-    departments: Department
-  }
+	baseUrl: 'http://localhost:3000/api',
+	apiVersion: 'v1',
+	models: {
+		employees: Employee,
+		departments: Department
+	}
 }
 
 @Injectable()

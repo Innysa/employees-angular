@@ -12,7 +12,7 @@
     </div>
 </div>
  
-<div class="row">
+<div class="row" *ngIf="totalCount != 0">
     <div class="col-md-12">
         <table class='table table-hover table-responsive table-bordered'>
  
@@ -34,7 +34,7 @@
                 <td>{{employee.department.name}}</td>
                 <td>
                     <a (click)="getEmployee(employee.id)" class='btn btn-primary m-r-5px'>
-                        <span class='glyphicon glyphicon-eye-open'></span> Read
+                        <span class='glyphicon glyphicon-eye-open'></span> View
                     </a>
  
                     <a (click)="updateEmployee(employee.id)" class='btn btn-info m-r-5px'>

@@ -5,6 +5,7 @@ import { Department } from '../models/department.model';
     type: 'employees',
     meta: JsonApiMetaModel
 })
+
 export class Employee extends JsonApiModel {
 
     @Attribute()
@@ -16,6 +17,6 @@ export class Employee extends JsonApiModel {
     @Attribute()
     active: boolean;
 
-	  @BelongsTo()
-	  department: Department;
+	@BelongsTo()
+	department: Department;
 }

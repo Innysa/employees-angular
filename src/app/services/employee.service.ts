@@ -3,62 +3,41 @@ import { Http, Response, Headers, RequestOptions } from '@angular/http';
 import { Observable} from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { Employee } from '../models/employee.model';
-import { Datastore } from '../datastore.service';
+import { Department } from '../models/department.model';
+import { Datastore } from '../services/datastore.service';
+import { JsonApiQueryData } from 'angular2-jsonapi';
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 
 export class EmployeeService {
-  private host = 'http://localhost:3001';
-          path = '/api/employees';
-          headers = new Headers({ 'Content-Type': 'application/json' });
-          httpOptions = {
-            headers: this.headers
-          };
-  private url = this.host + this.path;
 
-  constructor(private _http : Http, private  datastore: Datastore){ }
+    constructor(private  datastore: Datastore){ }
 
-  // readEmployees(): Observable<Employee[]>{
-  //   return this._http
-  //     .get(this.url)
-  //     .pipe(map((res: Response) => res.json()));
-  // }
+    createEmployee(employeeFormValue): Observable<Employee> {
+        let department = this.datastore.peekRecord(Department, employeeFormValue.department_id);
+        return this.datastore.createRecord(Employee, {
+            name: employeeFormValue.name,
+            active: employeeFormValue.active,
+            department: department,
+        }).save();
+    }
 
-  createEmployee(employee): Observable<Employee>{
-    return this._http.post(
-      this.url,
-      employee,
-      this.httpOptions
-    ).pipe(map((res: Response) => res.json()));
-  }
+    getEmployee(employee_id): Observable<Employee>{
+        return this.datastore.findRecord(Employee, employee_id);
+    }
 
-  getEmployee(employee_id): Observable<Employee>{
-    return this._http
-      .get(`${this.url}/${employee_id}`)
-      .pipe(map((res: Response) => res.json()));
-  }
-
-  updateEmployee(employee): Observable<Employee>{
-    return this._http.put(
-      `${this.url}/${employee.id}`,
-      employee,
-      this.httpOptions
-    ).pipe(map((res: Response) => res.json()));
-  }
-
-  deleteEmployee(employee_id){
-    return this._http.delete(
-        `${this.url}/${employee_id}`,
-        this.httpOptions
-    ).pipe(map((res: Response) => res.json()));
-  }
+    deleteEmployee(employee_id) {
+        return this.datastore.deleteRecord(Employee, employee_id);
+    }
 
 
-  getEmployees() {
-  return this.datastore.findAll(Employee, {
-    include: 'departments'
-  })
-}
+    getEmployees(page = 1, perPage = 10, search = ''): Observable<JsonApiQueryData<Employee>> {
+        return this.datastore.findAll(Employee, {
+            page: page,
+            per_page: perPage,
+            search: search
+        });
+    }
 }

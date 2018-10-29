@@ -2,15 +2,17 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Observable} from 'rxjs';
 import { JsonApiQueryData } from 'angular2-jsonapi';
-import { Datastore } from '../../datastore.service';
-import { Employee } from '../../employee';
-import { Department } from '../../department';
+import { Datastore } from '../../services/datastore.service';
+import { Employee } from '../../models/employee.model';
+import { Department } from '../../models/department.model';
+import { EmployeeService } from '../../services/employee.service';
+import { DepartmentService } from '../../services/department.service';
  
 @Component({
     selector: 'app-create-employee',
     templateUrl: './create-employee.component.html',
     styleUrls: ['./create-employee.component.css'],
-    providers: [Datastore]
+    providers: [Datastore, EmployeeService, DepartmentService]
 })
  
 export class CreateEmployeeComponent {
@@ -18,28 +20,23 @@ export class CreateEmployeeComponent {
     create_employee_form: FormGroup;
 
     departments: Department[];
-    employees: Employee[];
 
     @Output() show_read_employees_event = new EventEmitter();
  
     constructor(
-        private  datastore: Datastore,
-        formBuilder: FormBuilder
+        private employeeService: EmployeeService,
+        private departmentService: DepartmentService,
+        private formBuilder: FormBuilder
     ){
         this.create_employee_form = formBuilder.group({
-            name: ["", Validators.required],
-            active: [""],
-            department_id: ["", Validators.required]
+            name: ['', Validators.required],
+            active: [''],
+            department_id: ['', Validators.required]
         });
     }
  
     createEmployee(){
-        let department = this.datastore.peekRecord(Department, this.create_employee_form.value.department_id );
-        this.datastore.createRecord(Employee, {
-            name: this.create_employee_form.value.name,
-            active: this.create_employee_form.value.active,
-            department: department,
-        }).save().subscribe(
+        this.employeeService.createEmployee(this.create_employee_form.value).subscribe(
             employee => {
                 this.readEmployees();
             },
@@ -57,7 +54,7 @@ export class CreateEmployeeComponent {
     }
 
     getDepartments() {
-        this.datastore.findAll(Department).subscribe(
+        this.departmentService.getDepartments().subscribe(
           (departments: JsonApiQueryData<Department>) => {
             this.departments = departments.getModels();
           }

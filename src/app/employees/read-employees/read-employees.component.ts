@@ -1,17 +1,17 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 import { JsonApiQueryData } from 'angular2-jsonapi';
-import { Observable} from 'rxjs';
-import { Employee } from '../../employee';
-import { Datastore } from '../../datastore.service';
-import { fromEvent, timer } from 'rxjs';
+import { Observable, fromEvent, timer } from 'rxjs';
+import { Employee } from '../../models/employee.model';
+import { Datastore } from '../../services/datastore.service';
+import { EmployeeService } from '../../services/employee.service';
 import { debounceTime, map, distinctUntilChanged, switchMap } from 'rxjs/operators';
  
 @Component({
     selector: 'app-read-employees',
     templateUrl: './read-employees.component.html',
     styleUrls: ['./read-employees.component.css'],
-    providers: [Datastore]
+    providers: [Datastore, EmployeeService]
 })
  
 export class ReadEmployeesComponent implements OnInit {
@@ -27,7 +27,7 @@ export class ReadEmployeesComponent implements OnInit {
     search: string = '';
     totalCount : number;
 
-    constructor(private datastore: Datastore,
+    constructor(private employeeService: EmployeeService,
                 private formBuilder: FormBuilder){}
 
     createEmployee(){
@@ -62,11 +62,7 @@ export class ReadEmployeesComponent implements OnInit {
     }
 
     getEmployees() {
-        this.datastore.findAll(Employee, {
-            page: this.page,
-            per_page: this.perPage,
-            search: this.search
-        }).subscribe(
+        this.employeeService.getEmployees(this.page, this.perPage, this.search).subscribe(
             (employees: JsonApiQueryData<Employee>) => {
                 this.employees = employees.getModels();
                 this.totalCount = employees.getMeta().meta.total;
@@ -78,7 +74,7 @@ export class ReadEmployeesComponent implements OnInit {
         this.getEmployees();
     }
 
-    searchEmployee(str){
+    searchEmployee(str: HTMLInputElement){
         this.search = str.value;
         this.page = 1;
         this.getEmployees();

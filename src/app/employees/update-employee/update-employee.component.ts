@@ -2,15 +2,17 @@ import { Component, OnChanges, Input, Output, EventEmitter } from '@angular/core
 import { FormGroup, FormControl, Validators, FormBuilder } from '@angular/forms';
 import { Observable} from 'rxjs';
 import { JsonApiQueryData } from 'angular2-jsonapi';
-import { Datastore } from '../../datastore.service';
-import { Employee } from '../../employee';
-import { Department } from '../../department';
+import { Datastore } from '../../services/datastore.service';
+import { Employee } from '../../models/employee.model';
+import { Department } from '../../models/department.model';
+import { EmployeeService } from '../../services/employee.service';
+import { DepartmentService } from '../../services/department.service';
  
 @Component({
     selector: 'app-update-employee',
     templateUrl: './update-employee.component.html',
     styleUrls: ['./update-employee.component.css'],
-    providers: [Datastore]
+    providers: [Datastore, EmployeeService, DepartmentService]
 })
 export class UpdateEmployeeComponent implements OnChanges {
  
@@ -22,21 +24,20 @@ export class UpdateEmployeeComponent implements OnChanges {
     departments: Department[];
  
     constructor(
-        private  datastore: Datastore,
+        private employeeService: EmployeeService,
+        private departmentService: DepartmentService,
         private formBuilder: FormBuilder
     ){
         this.update_employee_form = this.formBuilder.group({
-            name: ["", Validators.required],
-            active: [""],
-            department_id: ["", Validators.required]
+            name: ['', Validators.required],
+            active: [''],
+            department_id: ['', Validators.required]
         });
     }
  
     updateEmployee(){
-        let department = this.datastore.peekRecord(Department, this.update_employee_form.value.department_id );
-        this.datastore.findRecord(Employee, this.employee_id, {
-            include: 'department'
-        }).subscribe(
+        let department = this.getDepartment(this.update_employee_form.value.department_id);
+        this.employeeService.getEmployee(this.employee_id).subscribe(
             (employee: Employee) => {
                 employee.name = this.update_employee_form.value.name,
                 employee.active = this.update_employee_form.value.active,
@@ -65,9 +66,7 @@ export class UpdateEmployeeComponent implements OnChanges {
     }
 
     getEmployee(employee_id) {
-	    this.datastore.findRecord(Employee, employee_id, {
-		    include: 'departments'
-		}).subscribe(
+        this.employeeService.getEmployee(employee_id).subscribe(
             (employee: Employee) => {
             	this.update_employee_form.patchValue({
                     name: employee.name,
@@ -77,9 +76,13 @@ export class UpdateEmployeeComponent implements OnChanges {
             }
         );
     }
+
+    getDepartment(department_id) {
+        return this.departmentService.getDepartment(department_id);
+    }
  
     getDepartments() {
-        this.datastore.findAll(Department).subscribe(
+        this.departmentService.getDepartments().subscribe(
             (departments: JsonApiQueryData<Department>) => {
                 this.departments = departments.getModels();
             }

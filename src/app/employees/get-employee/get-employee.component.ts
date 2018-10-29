@@ -1,15 +1,14 @@
 import { Component, OnInit, Input, Output, OnChanges, EventEmitter } from '@angular/core';
 import { Observable} from 'rxjs';
-// import { EmployeeService } from '../../services/employee.service';
-import { Datastore } from '../../datastore.service';
-import { Employee } from '../../employee';
-import { Department } from '../../department';
+import { Datastore } from '../../services/datastore.service';
+import { Employee } from '../../models/employee.model';
+import { EmployeeService } from '../../services/employee.service';
  
 @Component({
     selector: 'app-get-employee',
     templateUrl: './get-employee.component.html',
     styleUrls: ['./get-employee.component.css'],
-    providers: [Datastore]
+    providers: [Datastore, EmployeeService]
 })
  
 export class GetEmployeeComponent implements OnChanges {
@@ -18,7 +17,7 @@ export class GetEmployeeComponent implements OnChanges {
  
     employee: Employee;
  
-    constructor(private datastore: Datastore){}
+    constructor(private employeeService: EmployeeService){}
  
     readEmployees(){
         this.show_read_employees_event.emit({ title: "Read Employees" });
@@ -29,10 +28,11 @@ export class GetEmployeeComponent implements OnChanges {
     }
 
     getEmployee(employee_id) {
-	    this.datastore.findRecord(Employee, employee_id).subscribe(
+	    this.employeeService.getEmployee(employee_id).subscribe(
             (employee: Employee) => {
     	      	this.employee = employee
-    	    }
+    	    },
+            error => console.log(error)
         );
     }
 }

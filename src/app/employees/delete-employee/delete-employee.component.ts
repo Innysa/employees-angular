@@ -1,37 +1,29 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { Observable} from 'rxjs';
-import { Datastore } from '../../datastore.service';
-import { Employee } from '../../employee';
+import { Datastore } from '../../services/datastore.service';
+import { EmployeeService } from '../../services/employee.service';
+import { Employee } from '../../models/employee.model';
 
 @Component({
     selector: 'app-delete-employee',
     templateUrl: './delete-employee.component.html',
     styleUrls: ['./delete-employee.component.css'],
-    providers: [Datastore]
+    providers: [Datastore, EmployeeService]
 })
  
 export class DeleteEmployeeComponent {
     @Output() show_read_employees_event = new EventEmitter();
     @Input() employee_id;
  
-    constructor(private  datastore: Datastore){}
+    constructor(private employeeService: EmployeeService){}
  
     deleteEmployee(){
-        this.datastore.deleteRecord(Employee, this.employee_id).subscribe(
+        this.employeeService.deleteEmployee(this.employee_id).subscribe(
             employee => {
-                console.log(employee);
                 this.readEmployees();
             },
             error => console.log(error)
         );
-        // this.employeeService.deleteEmployee(this.employee_id)
-        //     .subscribe(
-        //         employee => {
-        //             console.log(employee);
-        //             this.readEmployees();
-        //         },
-        //         error => console.log(error)
-        //      );
     }
  
     readEmployees(){

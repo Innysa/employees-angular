@@ -13,7 +13,7 @@
 <table class='table table-hover table-responsive table-bordered'>
  
     <tr>
-        <td>Name{{name}} </td>
+        <td>Name</td>
         <td>
             <input formControlName="name"
                 type='text' name='name'
@@ -42,9 +42,8 @@
             <select formControlName="department_id" name='department_id' class='form-control'>
                 <option
                     *ngFor="let department of departments"
-                    [selected]="department_id==department.id"
                     value='{{department.id}}'>
-                    {{department_id}} -- {{department.name}}
+                    {{department.name}}
                 </option>
             </select>
  
